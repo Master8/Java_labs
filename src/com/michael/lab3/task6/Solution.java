@@ -1,5 +1,6 @@
 package com.michael.lab3.task6;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
 import java.math.BigDecimal;
@@ -15,11 +16,7 @@ public class Solution
         float sum = 500; // 500 руб. на счете
         float percent = 0.00000001f;  // 0.000001% ежемесячно
 
-        // Считаем проценты за год
-        for(int i = 1; i <= 12; i++)
-        {
-            sum += sum*percent;
-        }
+        sum *= 1 + percent * 12;
 
         System.out.println("Сумма на счете через год: " + sum);
 
