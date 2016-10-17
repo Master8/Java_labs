@@ -17,20 +17,28 @@ public class DecoderServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String src = req.getParameter("src");
+        try
+        {
+            String src = req.getParameter("src");
 
-        byte[] buffer = Base64.decodeBase64(src);
-        byte[] rezultBuffer = new byte[100];
+            byte[] buffer = Base64.decodeBase64(src);
+            byte[] rezultBuffer = new byte[100];
 
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(buffer);
-        XZCompressorInputStream compressorInputStream = new XZCompressorInputStream(inputStream);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(buffer);
+            XZCompressorInputStream compressorInputStream = new XZCompressorInputStream(inputStream);
 
-        compressorInputStream.read(rezultBuffer);
-        compressorInputStream.close();
+            compressorInputStream.read(rezultBuffer);
+            compressorInputStream.close();
 
-        String result = new String(rezultBuffer);
+            String result = new String(rezultBuffer);
 
-        req.setAttribute("result", result);
+            req.setAttribute("result", result);
+        }
+        catch (Exception e)
+        {
+            req.setAttribute("result", "Incorrect line!");
+        }
+
         req.getRequestDispatcher("index.jsp").forward(req, resp);
     }
 }

@@ -5,13 +5,13 @@
 </head>
 <body>
     <h1>Шифровка/Дешифровка</h1>
-    <form action="http://localhost:8080/encode" method="post">
+    <form action="/encode" method="post">
         <p>Введите текст который нужно зашифровать:</p>
         <input type="text" name="src"/>
         <input type="submit" value="Зашифровать"/>
     </form>
 
-    <form action="http://localhost:8080/decode" method="post">
+    <form action="/decode" method="post">
         <p>Введите текст который нужно расшифровать:</p>
         <input type="text" name="src"/>
         <input type="submit" value="Расшифровать"/>
