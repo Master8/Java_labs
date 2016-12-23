@@ -42,6 +42,7 @@
     <entry_points version="2.0" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/src/com/michael/lab11task2" />
     <file type="web" url="file://$PROJECT_DIR$/src/com/michael/lab9" />
   </component>
   <component name="MavenProjectsManager">
@@ -50,6 +51,7 @@
         <option value="$PROJECT_DIR$/src/com/michael/lab6/task2/pom.xml" />
         <option value="$PROJECT_DIR$/src/com/michael/lab9/task1/pom.xml" />
         <option value="$PROJECT_DIR$/src/com/michael/lab11/pom.xml" />
+        <option value="$PROJECT_DIR$/src/com/michael/lab11task2/pom.xml" />
       </list>
     </option>
   </component>
