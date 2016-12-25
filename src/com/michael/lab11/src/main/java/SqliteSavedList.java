@@ -3,20 +3,18 @@ import org.sqlite.JDBC;
 import java.io.File;
 import java.io.Serializable;
 import java.sql.*;
+import java.util.AbstractList;
 import java.util.ArrayList;
 
-public class SqliteSavedList<E extends Serializable> implements SavedList<E>
+public class SqliteSavedList<E extends Serializable> extends AbstractList<E> implements SavedList<E>, Reloadable
 {
     private ArrayList<E> elements;
-    private String filename;
+    private DatabaseHelper<E> databaseHelper;
 
-    public SqliteSavedList(String filename) throws SQLException
+    public SqliteSavedList(DatabaseHelper<E> databaseHelper)
     {
-        this.filename = filename;
-        this.elements = new ArrayList<E>();
-
-        Driver driver = new JDBC();
-        DriverManager.registerDriver(driver);
+        this.databaseHelper = databaseHelper;
+        this.elements = new ArrayList<>();
 
         reload();
     }
@@ -24,20 +22,10 @@ public class SqliteSavedList<E extends Serializable> implements SavedList<E>
     @Override
     public void reload() {
 
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + filename);
-             Statement statement = connection.createStatement())
+        try
         {
-            connection.setAutoCommit(true);
-
-            ResultSet result = statement.executeQuery("select * from elements;");
-
-            while(result.next())
-            {
-                Object element = result.getObject("element");
-                elements.add((E)element);
-            }
-
-            result.close();
+            elements.clear();
+            elements.addAll(databaseHelper.loadElements());
 
         } catch (SQLException e) {
             throw new FileOperationException(e);
@@ -46,20 +34,9 @@ public class SqliteSavedList<E extends Serializable> implements SavedList<E>
 
     private void saveElements()
     {
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + filename);
-             Statement statement = connection.createStatement())
+        try
         {
-            connection.setAutoCommit(true);
-
-            statement.execute("delete from elements;");
-
-            for (int i = 0; i < elements.size(); i++)
-            {
-                PreparedStatement preparedStatement = connection.prepareStatement("insert into elements values (?, ?)");
-                preparedStatement.setInt(1, i);
-                preparedStatement.setObject(2, elements.get(i));
-                preparedStatement.executeUpdate();
-            }
+           databaseHelper.saveElements(elements);
 
         } catch (SQLException e) {
             throw new FileOperationException(e);
@@ -95,10 +72,33 @@ public class SqliteSavedList<E extends Serializable> implements SavedList<E>
     }
 
     @Override
+    public boolean add(E element)
+    {
+        boolean result = elements.add(element);
+        saveElements();
+
+        return result;
+    }
+
+    @Override
     public E remove(int index) {
         E element = elements.remove(index);
         saveElements();
 
         return element;
+    }
+
+    @Override
+    public boolean contains(E element) {
+        return super.contains(element);
+    }
+
+    @Override
+    public boolean remove(E element) {
+        boolean result = elements.remove(element);
+
+        saveElements();
+
+        return result;
     }
 }

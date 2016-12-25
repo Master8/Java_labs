@@ -80,10 +80,33 @@ public class FileSavedList<E extends Serializable> extends AbstractList<E> imple
     }
 
     @Override
+    public boolean add(E element)
+    {
+        boolean result = elements.add(element);
+        saveElements();
+
+        return result;
+    }
+
+    @Override
     public E remove(int index) {
         E element = elements.remove(index);
         saveElements();
 
         return element;
+    }
+
+    @Override
+    public boolean remove(E element) {
+        boolean result = elements.remove(element);
+
+        saveElements();
+
+        return result;
+    }
+
+    @Override
+    public boolean contains(E element) {
+        return super.contains(element);
     }
 }
